@@ -19,6 +19,16 @@ class NutritionAdvice(models.Model):
     photo = models.ImageField(upload_to='nutrition_photos/')
     description = models.TextField(max_length=2000)
     trimester = models.PositiveIntegerField()
+    week=models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"Trimester {self.trimester} - {self.description[:50]}"
+
+class Baby(models.Model):
+    trimester = models.PositiveIntegerField()
+    week = models.PositiveIntegerField()
+    description = models.TextField()
+    photo = models.ImageField(upload_to='baby/')
+
+    def __str__(self):
+        return f"Week {self.week}, Trimester {self.trimester}"

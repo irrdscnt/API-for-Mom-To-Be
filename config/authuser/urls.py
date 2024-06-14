@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path,include
-from .views import RegisterView,NutritionAdviceListCreateView,NutritionAdviceListView,NutritionAdviceDetailView,NutritionAdviceByTrimesterListView
+from .views import *
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -8,5 +8,8 @@ urlpatterns = [
     path('nutrition-advice/list', NutritionAdviceListView.as_view(), name='nutrition-advice-list'),
     path('nutrition-advice/<int:pk>/', NutritionAdviceDetailView.as_view(), name='nutrition-advice-detail'),
     path('nutrition-advice/trimester/<int:trimester>/', NutritionAdviceByTrimesterListView.as_view(), name='nutrition-advice-by-trimester'),
+    path('babies/', BabyListCreateView.as_view(), name='baby-list-create'),
+    path('babies/<int:pk>/', BabyDetailView.as_view(), name='baby-detail'),
+    path('babies/week/<int:week>/', BabyByWeekView.as_view(), name='baby-by-week'),
 
 ]

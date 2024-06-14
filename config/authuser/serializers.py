@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import AuthUser,NutritionAdvice
+from .models import *
 from django.contrib.auth.hashers import make_password
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -15,5 +15,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 class NutritionAdviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = NutritionAdvice
-        fields = ['id','photo', 'description', 'trimester']
+        fields = ['id','photo', 'description', 'trimester','week']
         read_only_fields = ['id']
+
+class BabySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Baby
+        fields = '__all__'
