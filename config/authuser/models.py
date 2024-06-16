@@ -1,4 +1,5 @@
 from django.db import models
+import datetime
 
 class AuthUser(models.Model):
     email=models.EmailField(max_length=150,unique=True)
@@ -32,3 +33,11 @@ class Baby(models.Model):
 
     def __str__(self):
         return f"Week {self.week}, Trimester {self.trimester}"
+    
+class Event(models.Model):
+    name = models.CharField(max_length=255)
+    date = models.DateField()
+    time = models.TimeField(default=datetime.time(0, 0))
+
+    def __str__(self):
+        return f'{self.name} - {self.date} {self.time}'

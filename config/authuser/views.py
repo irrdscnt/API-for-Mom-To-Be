@@ -1,10 +1,12 @@
 from django.shortcuts import render
+from django.utils.dateparse import parse_date  # Import Django's date parsing utility
 
 from rest_framework import generics
 from .models import *
 from .serializers import *
-from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 class RegisterView(generics.CreateAPIView):
@@ -52,3 +54,25 @@ class BabyByWeekView(generics.ListAPIView):
             return Response({"detail": "No data found for the specified week."}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+    
+@api_view(['POST'])
+def save_event(request):
+    serializer = EventSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def get_events_by_date(request, date):
+    try:
+        parsed_date = parse_date(date)
+        if parsed_date is None:
+            raise ValueError('Invalid date format. Use YYYY-MM-DD.')
+        events = Event.objects.filter(date=parsed_date)
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
+    except ValueError as e:
+        return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

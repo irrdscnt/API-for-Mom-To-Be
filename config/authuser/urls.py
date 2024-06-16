@@ -11,5 +11,7 @@ urlpatterns = [
     path('babies/', BabyListCreateView.as_view(), name='baby-list-create'),
     path('babies/<int:pk>/', BabyDetailView.as_view(), name='baby-detail'),
     path('babies/week/<int:week>/', BabyByWeekView.as_view(), name='baby-by-week'),
+    path('events/', save_event, name='save_event'),
+    path('events/date/<str:date>/', get_events_by_date, name='get_events_by_date'),
 
 ]

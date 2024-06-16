@@ -22,3 +22,24 @@ class BabySerializer(serializers.ModelSerializer):
     class Meta:
         model = Baby
         fields = '__all__'
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+
+    def validate_date(self, value):
+        if isinstance(value, str):
+            try:
+                value = datetime.strptime(value, '%Y-%m-%d').date()
+            except ValueError:
+                raise serializers.ValidationError("Date must be in format YYYY-MM-DD")
+        return value
+
+    def validate_time(self, value):
+        if isinstance(value, str):
+            try:
+                value = datetime.strptime(value, '%H:%M:%S').time()
+            except ValueError:
+                raise serializers.ValidationError("Time must be in format HH:MM:SS")
+        return value
