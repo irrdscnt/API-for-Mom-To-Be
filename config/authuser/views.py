@@ -1,12 +1,18 @@
 from django.shortcuts import render
-from django.utils.dateparse import parse_date  # Import Django's date parsing utility
-
+from django.utils.dateparse import parse_date  
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework import generics
 from .models import *
 from .serializers import *
 from rest_framework import status
+from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from django.contrib.auth import authenticate,get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
+
 
 
 class RegisterView(generics.CreateAPIView):
@@ -76,3 +82,40 @@ def get_events_by_date(request, date):
         return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+class LoginView(APIView):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = authenticate(request, email=email, password=password)
+
+        if user:
+            # Если пользователь аутентифицирован, генерируем JWT access и refresh токены
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'email': user.email,
+                'name': user.name,
+                'phone': user.phone,
+                'pregnancy_week': user.pregnancy_week,
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+            })
+        else:
+            return Response({'error': 'Неправильные учетные данные'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+class TokenRefresh(APIView):
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.data.get('refresh')
+
+        serializer = TokenRefreshView.serializer_class(data={'refresh': refresh_token})
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            return Response({'error': 'Неправильный refresh токен'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response({
+            'access': str(serializer.validated_data['access']),
+        })

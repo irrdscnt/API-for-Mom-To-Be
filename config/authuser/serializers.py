@@ -43,3 +43,7 @@ class EventSerializer(serializers.ModelSerializer):
             except ValueError:
                 raise serializers.ValidationError("Time must be in format HH:MM:SS")
         return value
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField()

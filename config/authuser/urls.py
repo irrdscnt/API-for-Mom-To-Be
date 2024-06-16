@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('nutrition-advice/', NutritionAdviceListCreateView.as_view(), name='nutrition-advice-list-create'),
+    path('login/', LoginView.as_view(), name='login'),
     path('nutrition-advice/list', NutritionAdviceListView.as_view(), name='nutrition-advice-list'),
     path('nutrition-advice/<int:pk>/', NutritionAdviceDetailView.as_view(), name='nutrition-advice-detail'),
     path('nutrition-advice/trimester/<int:trimester>/', NutritionAdviceByTrimesterListView.as_view(), name='nutrition-advice-by-trimester'),

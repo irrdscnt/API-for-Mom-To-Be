@@ -17,6 +17,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
+AUTH_USER_MODEL = 'authuser.AuthUser'
 
 
 
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
     'authuser'
 ]
@@ -66,7 +68,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 REST_FRAMEWORK = {
+       'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.AllowAny",),
+    
+}
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('JWT',),
+    'USER_ID_FIELD': 'email',  # Поле, используемое для идентификации пользователя в токене
+    'USER_ID_CLAIM': 'email',  # Ключ, используемый для идентификации пользователя в payload токена
 }
 
 # Database
