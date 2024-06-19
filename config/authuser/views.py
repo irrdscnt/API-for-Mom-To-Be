@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.utils.dateparse import parse_date  
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from rest_framework import generics
 from .models import *
 from .serializers import *
@@ -13,7 +14,10 @@ from django.contrib.auth import authenticate,get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
-
+class NutritionAdviceUpdateAPIView(generics.UpdateAPIView):
+    queryset = NutritionAdvice.objects.all()
+    serializer_class = NutritionAdviceSerializer
+    permission_classes = [AllowAny]
 
 class RegisterView(generics.CreateAPIView):
     queryset = AuthUser.objects.all()
@@ -119,3 +123,35 @@ class TokenRefresh(APIView):
         return Response({
             'access': str(serializer.validated_data['access']),
         })
+    
+class NutritionAdviceDeleteAPIView(generics.DestroyAPIView):
+    queryset = NutritionAdvice.objects.all()
+    serializer_class = NutritionAdviceSerializer
+    permission_classes = [AllowAny]
+
+@api_view(['POST'])
+def create_fitness(request):
+    if request.method == 'POST':
+        serializer = FitnessSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_fitness(request, pk):
+    try:
+        fitness = Fitness.objects.get(pk=pk)
+    except Fitness.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'DELETE':
+        fitness.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class FitnessByTrimesterListView(generics.ListAPIView):
+    serializer_class = FitnessSerializer
+
+    def get_queryset(self):
+        trimester = self.kwargs['trimester']
+        return Fitness.objects.filter(trimester=trimester)

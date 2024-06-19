@@ -47,3 +47,8 @@ class EventSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()
+
+class FitnessSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Fitness
+        fields = '__all__'

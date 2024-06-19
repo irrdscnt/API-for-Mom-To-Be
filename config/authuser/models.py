@@ -60,3 +60,12 @@ class Event(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.date} {self.time}'
+    
+class Fitness(models.Model):
+    photo = models.ImageField(upload_to='nutrition_photos/')
+    description = models.TextField(max_length=2000)
+    trimester = models.PositiveIntegerField()
+    week=models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Trimester {self.trimester} - {self.description[:50]}"

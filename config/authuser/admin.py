@@ -6,4 +6,6 @@ admin.site.register(AuthUser)
 admin.site.register(NutritionAdvice)
 admin.site.register(Baby)
 admin.site.register(Event)
+admin.site.register(Fitness)
+
 
